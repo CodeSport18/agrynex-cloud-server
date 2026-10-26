@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="grid">
+  <div class="card">
+    <h2>Raspberry Pi</h2>
+    <p><span class="pill" id="device-pill">Loading…</span></p>
+    <p class="muted small" id="device-detail"></p>
+
+    <div class="control-row">
+      <div><strong>System</strong><div class="muted small">Detection and camera</div></div>
+      <label class="switch"><input type="checkbox" data-control="system"><span class="slider"></span></label>
+    </div>
+    <div class="control-row">
+      <div><strong>Siren</strong><div class="muted small" id="siren-detail"></div></div>
+      <label class="switch"><input type="checkbox" data-control="siren"><span class="slider"></span></label>
+    </div>
+    <div class="control-row">
+      <div><strong>Sprinkler</strong><div class="muted small" id="sprinkler-detail"></div></div>
+      <label class="switch"><input type="checkbox" data-control="sprinkler"><span class="slider"></span></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Live view</h2>
+    <div class="live" id="live"><span id="live-message">Press Start to watch</span></div>
+    <p><button class="primary" id="live-toggle">Start</button></p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Latest alerts</h2>
+  <div class="alert-list" id="alert-list"></div>
+  <p><a href="{{ url_for('web.alerts') }}">See all alerts</a></p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

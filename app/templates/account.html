@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Account</h1>
+<div class="card">
+  <p>{{ g.user.name or g.user.email }} <span class="muted">· {{ g.user.email }} · {{ g.user.role }}</span></p>
+</div>
+<div class="card">
+  <h2>Change password</h2>
+  <form id="change-password">
+    <label class="field"><span>Current password</span>
+      <input type="password" name="current_password" autocomplete="current-password" required></label>
+    <label class="field"><span>New password (at least 8 characters)</span>
+      <input type="password" name="new_password" minlength="8" autocomplete="new-password" required></label>
+    <button class="primary" type="submit">Change password</button>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

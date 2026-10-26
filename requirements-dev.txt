@@ -1,0 +1,7 @@
+-r requirements.txt
+pytest==9.1.1
+mongomock==4.3.0
+moto[server]==5.2.4
+python-socketio[client]==5.17.0
+websocket-client==1.9.2
+requests==2.34.2

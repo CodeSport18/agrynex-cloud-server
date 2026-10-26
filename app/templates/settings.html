@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Settings</h1>
+{% if g.user.role != 'admin' %}<p class="muted">Only an admin can change settings.</p>{% endif %}
+<form id="settings-form">
+  <div class="card">
+    <h2>Video</h2>
+    <div class="control-row">
+      <div><strong>Live view</strong><div class="muted small">Watch the camera from the app or dashboard</div></div>
+      <label class="switch"><input type="checkbox" name="live_view_enabled"><span class="slider"></span></label>
+    </div>
+    <div class="control-row">
+      <div><strong>Alert clips</strong><div class="muted small">Save a short video with each alert</div></div>
+      <label class="switch"><input type="checkbox" name="clips_enabled"><span class="slider"></span></label>
+    </div>
+    <div class="control-row">
+      <div><strong>Alert snapshots</strong><div class="muted small">Save a photo with each alert</div></div>
+      <label class="switch"><input type="checkbox" name="snapshots_enabled"><span class="slider"></span></label>
+    </div>
+    <div class="grid">
+      <label class="field"><span>Seconds of clip before the detection (0–15)</span>
+        <input type="number" name="clip_pre_s" min="0" max="15" required></label>
+      <label class="field"><span>Seconds of clip after the detection (1–30)</span>
+        <input type="number" name="clip_post_s" min="1" max="30" required></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Siren and sprinkler</h2>
+    <div class="grid">
+      <label class="field"><span>Seconds they run after a detection (1–600)</span>
+        <input type="number" name="auto_duration_s" min="1" max="600" required></label>
+      <label class="field"><span>Longest they stay on when switched on by hand, in seconds (10–3600)</span>
+        <input type="number" name="manual_max_s" min="10" max="3600" required></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Alerts</h2>
+    <div class="grid">
+      <label class="field"><span>Minimum seconds between alerts (0–3600)</span>
+        <input type="number" name="alert_cooldown_s" min="0" max="3600" required></label>
+      <label class="field"><span>Days to keep alerts and their media (1–365)</span>
+        <input type="number" name="retention_days" min="1" max="365" required></label>
+    </div>
+  </div>
+
+  {% if g.user.role == 'admin' %}<button class="primary" type="submit">Save settings</button>{% endif %}
+</form>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

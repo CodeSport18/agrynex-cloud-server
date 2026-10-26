@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: agrynex-cloud-server
+    runtime: python
+    # The free plan sleeps when idle, which drops the Pi's connection.
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    # One worker, because the live link to the Pi is held in memory.
+    startCommand: gunicorn -w 1 --threads 100 --timeout 0 -b 0.0.0.0:$PORT wsgi:app
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.2
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEVICE_TOKEN
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB
+        value: agrynex
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        sync: false
+      - key: S3_BUCKET
+        sync: false

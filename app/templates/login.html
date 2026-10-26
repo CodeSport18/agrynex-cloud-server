@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Agrynex{% endblock %}
+{% block content %}
+<div class="card login-box">
+  <h1>Agrynex</h1>
+  <form method="post">
+    <label class="field"><span>Email</span>
+      <input type="email" name="email" autocomplete="username" required autofocus>
+    </label>
+    <label class="field"><span>Password</span>
+      <input type="password" name="password" autocomplete="current-password" required>
+    </label>
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    <button class="primary" type="submit">Sign in</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+flask==3.1.2
+flask-socketio==5.7.0
+python-socketio==5.17.0
+python-engineio==4.14.0
+simple-websocket==1.1.0
+pymongo==4.19.0
+boto3==1.43.118
+pyjwt==2.15.1
+gunicorn==26.2.0
+python-dotenv==1.2.4

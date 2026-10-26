@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Users</h1>
+<div class="card">
+  <table>
+    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th></th></tr></thead>
+    <tbody id="user-rows"></tbody>
+  </table>
+</div>
+<div class="card">
+  <h2>Add a user</h2>
+  <form id="add-user">
+    <div class="grid">
+      <label class="field"><span>Name</span><input type="text" name="name"></label>
+      <label class="field"><span>Email</span><input type="email" name="email" required></label>
+      <label class="field"><span>Password (at least 8 characters)</span>
+        <input type="password" name="password" minlength="8" autocomplete="new-password" required></label>
+      <label class="field"><span>Role</span>
+        <select name="role"><option value="user">User</option><option value="admin">Admin</option></select></label>
+    </div>
+    <button class="primary" type="submit">Add user</button>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

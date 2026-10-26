@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Agrynex{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-page="{{ active }}" data-role="{{ g.user.role if g.user else '' }}">
+  {% if g.user %}
+  <header class="top">
+    <div class="brand">Agrynex</div>
+    <nav class="tabs">
+      <a href="{{ url_for('web.dashboard') }}" class="{{ 'active' if active == 'dashboard' }}">Dashboard</a>
+      <a href="{{ url_for('web.alerts') }}" class="{{ 'active' if active == 'alerts' }}">Alerts</a>
+      <a href="{{ url_for('web.settings') }}" class="{{ 'active' if active == 'settings' }}">Settings</a>
+      {% if g.user.role == 'admin' %}
+      <a href="{{ url_for('web.users') }}" class="{{ 'active' if active == 'users' }}">Users</a>
+      {% endif %}
+      <a href="{{ url_for('web.account') }}" class="{{ 'active' if active == 'account' }}">Account</a>
+    </nav>
+    <form method="post" action="{{ url_for('web.logout') }}">
+      <button type="submit">Sign out</button>
+    </form>
+  </header>
+  {% endif %}
+  <main>{% block content %}{% endblock %}</main>
+  <div class="toast" id="toast"></div>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
