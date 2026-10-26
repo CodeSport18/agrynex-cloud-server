@@ -151,6 +151,10 @@ function initDashboard() {
       pill.className = "pill warn";
       pill.textContent = "Online · system off";
       detail.textContent = "Detection and camera are paused";
+    } else if (!settings.animal_detection && !settings.human_detection) {
+      pill.className = "pill warn";
+      pill.textContent = "Online · detection off";
+      detail.textContent = "Animal and person detection are both off";
     } else {
       pill.className = "pill on";
       pill.textContent = "Online · watching";
@@ -158,6 +162,8 @@ function initDashboard() {
         state.last_detection_at ? `Last detection ${timeAgo(state.last_detection_at)}` : "No detections yet";
     }
     inputs.system.checked = settings.system_on;
+    inputs.animal_detection.checked = settings.animal_detection;
+    inputs.human_detection.checked = settings.human_detection;
     for (const name of ["siren", "sprinkler"]) {
       inputs[name].checked = !!(state[name] && state[name].on);
       inputs[name].disabled = !device.online;

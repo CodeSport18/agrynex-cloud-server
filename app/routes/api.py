@@ -11,7 +11,10 @@ from ..db import utcnow, validate_settings
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
-CONTROL_TARGETS = {"system", "siren", "sprinkler"}
+CONTROL_TARGETS = {"system", "siren", "sprinkler", "animal_detection", "human_detection"}
+# Controls saved on the server, so the Pi picks them up whenever it reconnects.
+SAVED_CONTROLS = {"system": "system_on", "animal_detection": "animal_detection",
+                  "human_detection": "human_detection"}
 MAX_PAGE = 100
 
 
@@ -92,11 +95,11 @@ def control():
     data = body()
     target, on = data.get("target"), data.get("on")
     if target not in CONTROL_TARGETS or not isinstance(on, bool):
-        return jsonify(error="Send target (system, siren or sprinkler) and on (true or false)"), 400
+        return jsonify(error="Send target (system, siren, sprinkler, animal_detection or human_detection) "
+                             "and on (true or false)"), 400
 
-    if target == "system":
-        # Saved on the server so the Pi picks it up whenever it reconnects.
-        db().update_settings({"system_on": on})
+    if target in SAVED_CONTROLS:
+        db().update_settings({SAVED_CONTROLS[target]: on})
         hub().push_config()
         db().log_event("control", g.user, target=target, on=on)
         return jsonify(ok=True, delivered=hub().status()["online"])

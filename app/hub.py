@@ -18,7 +18,8 @@ VIEWERS_ROOM = "viewers"
 
 # Settings the Pi needs to know about.
 DEVICE_CONFIG_KEYS = [
-    "system_on", "live_view_enabled", "clips_enabled", "snapshots_enabled",
+    "system_on", "animal_detection", "human_detection",
+    "live_view_enabled", "clips_enabled", "snapshots_enabled",
     "auto_duration_s", "manual_max_s", "clip_pre_s", "clip_post_s", "alert_cooldown_s",
 ]
 
@@ -137,6 +138,20 @@ class DeviceHub:
                 self.device_state = state
             self._touch_device(online=True)
             self.broadcast_status()
+
+        @sio.on("detection_changed", namespace=DEVICE_NS)
+        def device_detection_changed(data):
+            """Someone used the switches on the Pi's local web page."""
+            with self.lock:
+                if request.sid != self.device_sid or not isinstance(data, dict):
+                    return
+            changes = {k: data[k] for k in ("animal_detection", "human_detection")
+                       if isinstance(data.get(k), bool)}
+            if changes:
+                self.db.update_settings(changes)
+                self.db.log_event("detection_changed_on_pi", **changes)
+                # Echo the config back so the Pi knows the change was saved.
+                self.push_config()
 
         @sio.on("frame", namespace=DEVICE_NS)
         def device_frame(data):

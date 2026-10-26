@@ -253,3 +253,42 @@ def test_retention_deletes_old_alerts(app, client):
     db.alerts.update_one({"_id": ObjectId(old_id)}, {"$set": {"created_at": utcnow() - timedelta(days=31)}})
     assert delete_expired_alerts(db, storage) == 1
     assert db.alerts.count_documents({}) == 1
+
+
+def test_detection_switches_reach_the_pi(app, socketio, client):
+    headers = login(client)
+    pi = device_socket(app, socketio)
+    config = events(pi, "/device", "config")[-1]
+    assert config["animal_detection"] is True and config["human_detection"] is True
+
+    res = client.post("/api/control", headers=headers, json={"target": "human_detection", "on": False})
+    assert res.status_code == 200
+    config = events(pi, "/device", "config")[-1]
+    assert config["human_detection"] is False and config["animal_detection"] is True
+    assert client.get("/api/settings", headers=headers).json["settings"]["human_detection"] is False
+    # Like system on/off, it's not part of the settings form.
+    assert client.put("/api/settings", headers=headers, json={"animal_detection": False}).status_code == 400
+
+
+def test_detection_change_on_the_pi_reaches_clients(app, socketio, client):
+    headers = login(client)
+    viewer = socketio.test_client(app, namespace="/client", auth={"token": headers["Authorization"][7:]})
+    pi = device_socket(app, socketio)
+    pi.get_received("/device")
+    viewer.get_received("/client")
+
+    pi.emit("detection_changed", {"animal_detection": False, "human_detection": True, "bogus": 1},
+            namespace="/device")
+    settings = client.get("/api/settings", headers=headers).json["settings"]
+    assert settings["animal_detection"] is False and settings["human_detection"] is True
+    assert "bogus" not in settings
+    assert events(viewer, "/client", "status")[-1]["settings"]["animal_detection"] is False
+    # The Pi gets the saved config back as confirmation.
+    assert events(pi, "/device", "config")[-1]["animal_detection"] is False
+
+
+def test_new_pi_connection_replaces_the_old_one(app, socketio):
+    old = device_socket(app, socketio)
+    new = device_socket(app, socketio)
+    assert not old.is_connected("/device")
+    assert new.is_connected("/device")

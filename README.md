@@ -9,7 +9,7 @@ Connects the Agrynex Raspberry Pi on the farm to the mobile app and a browser da
 
 - Alerts with a snapshot and a short clip. The clip starts a few seconds before the detection and runs a few seconds after it.
 - Live view. The Pi streams only while someone has it open.
-- Controls: system on/off (pauses detection and the camera), siren on/off and sprinkler on/off. When switched on by hand, the siren and sprinkler turn off automatically after a set maximum time.
+- Controls: system on/off (pauses detection and the camera), animal detection on/off, person detection on/off, siren on/off and sprinkler on/off. The detection switches stay in sync with the ones on the Pi's local web page, in both directions. When switched on by hand, the siren and sprinkler turn off automatically after a set maximum time.
 - Settings: live view, clips and snapshots can each be turned on or off. You can also set clip length, how long the siren and sprinkler run after a detection, the manual safety cap, the minimum time between alerts, and how many days to keep alerts.
 - Users: an admin adds people. There's no public sign-up. Everyone can view alerts and use the controls. Only admins can change settings and manage users.
 - Alerts older than the retention period are deleted every hour, along with their S3 files.
@@ -75,7 +75,7 @@ The app sends `Authorization: Bearer <token>`, using the token from `/api/auth/l
 | GET | `/api/auth/me` | signed in |
 | POST | `/api/auth/change-password` | signed in |
 | GET | `/api/status` | signed in |
-| POST | `/api/control` `{target: system\|siren\|sprinkler, on}` | signed in |
+| POST | `/api/control` `{target: system\|animal_detection\|human_detection\|siren\|sprinkler, on}` | signed in |
 | GET / PUT | `/api/settings` | GET signed in, PUT admin |
 | GET | `/api/alerts?limit=&before=<alert id>` | signed in |
 | GET / DELETE | `/api/alerts/<id>` | signed in |

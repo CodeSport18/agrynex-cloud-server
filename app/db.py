@@ -5,6 +5,10 @@ from pymongo import ASCENDING, DESCENDING, MongoClient
 DEFAULT_SETTINGS = {
     # Whether the Pi should run detection and the camera at all.
     "system_on": True,
+    # Which kinds of detection run while the system is on. Kept in sync with
+    # the switches on the Pi's own local web page.
+    "animal_detection": True,
+    "human_detection": True,
     # Video features, each of which can be turned off separately.
     "live_view_enabled": True,
     "clips_enabled": True,
@@ -31,10 +35,11 @@ SETTING_LIMITS = {
     "retention_days": (1, 365),
 }
 
-BOOL_SETTINGS = {"system_on", "live_view_enabled", "clips_enabled", "snapshots_enabled"}
+BOOL_SETTINGS = {"system_on", "animal_detection", "human_detection",
+                 "live_view_enabled", "clips_enabled", "snapshots_enabled"}
 
 # Changed through the control endpoint rather than the settings form.
-CONTROL_SETTINGS = {"system_on"}
+CONTROL_SETTINGS = {"system_on", "animal_detection", "human_detection"}
 
 
 def utcnow():
